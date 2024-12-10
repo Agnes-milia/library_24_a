@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -53,5 +54,15 @@ class BookController extends Controller
         return Book::with('copies')
         //->where('user_id','=', $user->id)
         ->get();
+    }
+
+    public function authorWithTitles(){
+        $authors = DB::table('books')
+        ->selectRaw('author, COUNT(*) db' )
+        ->groupBy('author')
+        ->havingRaw('db > 1')
+        ->get();
+
+        return $authors;
     }
 }

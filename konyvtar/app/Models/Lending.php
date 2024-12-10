@@ -14,7 +14,8 @@ class Lending extends Model
         'copy_id',
         'start',
         'end',
-        'warning'
+        'warning',
+        'extension'
     ];
 
     //összetett kulcshoz tartozó mezők

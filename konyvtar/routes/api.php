@@ -8,6 +8,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Librarian;
+use App\Http\Middleware\LibrarianAndWMan;
 use App\Http\Middleware\Warehouseman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,13 +35,14 @@ Route::middleware(['auth:sanctum'])
         //kikölcsönzött könyvek adatai
         Route::get('lendings-books-data', [LendingController::class, 'lendingsBooksData']);
         Route::get('/lendings-copies', [LendingController::class, "lendingsWithCopies"]);
-        Route::get('/userlendings', [UserController::class, "userLendings"]);
+        
         Route::get('/reserved-books', [ReservationController::class, 'reservedBooks']);
         Route::get('/reserved-count', [ReservationController::class, 'reservedCount']);
+        Route::get('reserved-count-sql', [ReservationController::class, 'reservedCountSQL']);
         Route::get('/reservations-i-have-from', [LendingController::class, 'reservationsIHaveFrom']);
         Route::patch('/bring-back/{copy_id}/{start}', [LendingController::class, 'bringBack']);
         Route::patch('/bring-back2/{copy_id}/{start}', [LendingController::class, 'bringBack2']);
-
+        Route::get('author-with-titles', [BookController::class, 'authorWithTitles']);
 
         // Kijelentkezés útvonal
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
@@ -53,6 +55,7 @@ Route::middleware(['auth:sanctum', Admin::class])
     Route::apiResource('/admin/users', UserController::class);
     Route::get('/admin/specific-date', [LendingController::class, "dateSpecific"]);
     Route::get('/admin/specific-copy/{copy_id}', [LendingController::class, "copySpecific"]);
+    Route::get('/admin/reserved-count-sql-id/{id}', [ReservationController::class, 'reservedCountSQLId']);
 });
 
 //librarian
@@ -70,5 +73,11 @@ Route::middleware(['auth:sanctum', Librarian::class])
 Route::middleware(['auth:sanctum', Warehouseman::class])
 ->group(function () {
     //útvonalak
+});
+
+//librarian és warehouseman metszet rétege
+Route::middleware(['auth:sanctum', LibrarianAndWMan::class])
+->group(function () {
+    Route::get('/userlendings', [UserController::class, "userLendings"]);
 });
 

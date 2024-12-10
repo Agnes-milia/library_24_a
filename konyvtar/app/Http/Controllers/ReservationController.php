@@ -74,4 +74,16 @@ class ReservationController extends Controller
 
         return $pieces;
     }
+
+    public function reservedCountSQL(){
+        $user = Auth::user();
+        $pieces = DB::select("SELECT count(*) FROM reservations WHERE user_id = ?", [$user->id]);
+        return $pieces;
+    }
+
+    //admin útvonal
+    public function reservedCountSQLId($id){
+        $pieces = DB::select("SELECT count(*) FROM reservations WHERE user_id = ?", [$id]);
+        return $pieces;
+    }
 }
